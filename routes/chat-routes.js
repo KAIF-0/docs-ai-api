@@ -22,15 +22,16 @@ chatInstance.post("/feed-docs", async (c) => {
         : urlObj.hostname.split(".")[0];
 
     console.log(key);
- 
+
     // checking if docs already exist in redis
     const existingDocs = await chatRedisClient.get(key);
     if (!existingDocs) {
       // scraping the documentation if not found in redis
-      await scrapeDocumentation(key, url);
+      scrapeDocumentation(key, url)
+        .then(() => console.log("Documentation Scrapped Successfully!"))
+        .catch((err) => console.log(err));
     }
     // console.log(JSON.parse(existingDocs).length);
-
 
     const chat = await prisma.chat.create({
       data: {
@@ -123,18 +124,9 @@ chatInstance.post("/getResponse/:chatId", async (c) => {
     }
 
     // const data = await docsData(key, url);
-    // const optimizedResponse = data
-    //   ? data.map((doc) => doc.content).join(" ")
-    //   : "No data available.";
-    // const isRelated =
-    //   optimizedResponse.toLowerCase().includes(key.toLowerCase()) ||
-    //   optimizedResponse.toLowerCase().includes(url.toLowerCase());
-    // const prompt = isRelated
-    //   ? `Based on the documentation data: ${optimizedResponse}, please answer the question: "${question}". If you find the answer in the data, provide the best and most concise response you can otherwise provide a response that is relevant to the question.`
-    //   : `Send response: I cannot answer this as it is not related to the documentation data.`;
 
-    // const prompt = `Based on the documentation data: ${data} , please answer the question: "${question}". If you find the answer in the data, provide the best and most concise response you can otherwise answer it yourself with the best response."`;
-    const response = await model.generateContent([question]);
+    const prompt = `This is my documentation site url: ${url} and it's name: ${key}, please answer the question: "${question}". If the question is related to the site url and it's name then provide the best response you can otherwise response with that "Sorry, I cannot answer non related questions!"`;
+    const response = await model.generateContent([prompt]);
     console.log(response.response.text());
 
     // await prisma.message.deleteMany({ where: { chatId } });

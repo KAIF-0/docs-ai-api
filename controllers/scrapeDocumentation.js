@@ -21,7 +21,7 @@ export const scrapeDocumentation = async (key, url) => {
   });
 
   // console.log(docLinks)
- 
+
   let docsData = [];
 
   for (let pageLink of docLinks) {
@@ -35,10 +35,17 @@ export const scrapeDocumentation = async (key, url) => {
     });
 
     docsData.push({ url: pageLink, content });
+
+    
+    
+    //saving the scraped data in redis
+    await chatRedisClient.setEx(
+      key,
+      30 * 24 * 60 * 60,
+      JSON.stringify(docsData)
+    );
   }
 
   await browser.close();
   //   console.log(docsData);
-  //saving the scraped data in redis
-  await chatRedisClient.setEx(key, 30 * 24 * 60 * 60, JSON.stringify(docsData));
 };

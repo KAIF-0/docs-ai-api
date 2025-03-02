@@ -36,10 +36,10 @@ await subRedisClient
 await chatRedisClient
   .connect()
   .then(() => {
-    console.log("CHAT REDIS INSTANCE CONNECTED!");
+    console.log("CHAT REDIS INSTANCE CONNECTED!"); 
   })
   .catch((err) => {
-    console.log("CHAT REDIS ERROR: ", err);
+    console.log("CHAT REDIS ERROR: ", err); 
   });
 
 //redis error events
