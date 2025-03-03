@@ -127,7 +127,7 @@ chatInstance.post("/getResponse/:chatId", async (c) => {
 
     const prompt = `This is my documentation site url: ${url} and it's name: ${key}, please answer the question: "${question}". If the question is related to the site url and it's name then provide the best response you can otherwise response with that "Sorry, I cannot answer non related questions!"`;
     const response = await model.generateContent([prompt]);
-    console.log(response.response.text());
+    // console.log(response.response.text());
 
     // await prisma.message.deleteMany({ where: { chatId } });
 
