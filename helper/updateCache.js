@@ -8,5 +8,5 @@ export const updateChatCache = async (key) => {
       messages: true,
     },
   });
-  chatRedisClient.set(key, JSON.stringify(userChats));
+  await chatRedisClient.set(key, JSON.stringify(userChats));
 };

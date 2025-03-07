@@ -79,7 +79,7 @@ paymentInstance.post("/saveDetails", async (c) => {
       subscriptionDetails.subscriptionType === "monthly"
         ? 30 * 24 * 60 * 60
         : 365 * 24 * 60 * 60;
-    subRedisClient.setEx(
+    await subRedisClient.setEx(
       userId,
       expiryTime,
       JSON.stringify(subscriptionDetails)
