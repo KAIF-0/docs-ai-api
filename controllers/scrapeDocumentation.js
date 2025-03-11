@@ -19,7 +19,7 @@ export const scrapeDocumentation = async (key, url) => {
     await scrapeQueue.add(
       "scrapeJob",
       { key, url },
-      { jobId: key, removeOnComplete: true, removeOnFail: true, attempts: 10 }
+      { jobId: key, removeOnComplete: true, removeOnFail: true }
     );
     console.log("Job added successfully!");
   } else {
