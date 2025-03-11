@@ -9,14 +9,17 @@ export const getOrSetUserChats = async (key) => {
     //if not found in cache
     const freshData = await prisma.chat.findMany({
       where: { userId: key },
-      include: {  
+      include: {
         messages: true,
       },
-    }); 
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
     if (!freshData) return resolve(null);
     console.log("User Chats: ", freshData);
 
-    //cache fresh data 
+    //cache fresh data
     chatRedisClient.set(key, JSON.stringify(freshData));
     return resolve(freshData);
   });
