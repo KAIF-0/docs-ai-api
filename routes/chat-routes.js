@@ -26,10 +26,8 @@ chatInstance.post("/feed-docs", async (c) => {
     // checking if docs already exist in redis
     const existingDocs = await chatRedisClient.get(key);
     if (!existingDocs) {
-      // scraping the documentation if not found in redis
-      scrapeDocumentation(key, url)
-        .then(() => console.log("Documentation Scrapped Successfully!"))
-        .catch((err) => console.log(err));
+      // add a scraping job if not found in redis
+      await scrapeDocumentation(key, url).catch((err) => console.log(err));
     }
     // console.log(JSON.parse(existingDocs).length);
 
