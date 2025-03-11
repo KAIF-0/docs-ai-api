@@ -16,7 +16,11 @@ const scrapeQueue = new Queue("scrapeQueue", {
 export const scrapeDocumentation = async (key, url) => {
   const job = await scrapeQueue.getJob(key);
   if (!job) {
-    await scrapeQueue.add("scrapeJob", { key, url }, { jobId: key });
+    await scrapeQueue.add(
+      "scrapeJob",
+      { key, url },
+      { jobId: key, removeOnComplete: true, removeOnFail: true }
+    );
     console.log("Job added successfully!");
   } else {
     console.log("Job already exists!");
@@ -68,16 +72,13 @@ const worker = new Worker(
     connection: {
       url: process.env.REDIS_CHAT_INSTANCE_URL,
     },
-    concurrency: 10,
   }
 );
 
 worker.on("completed", async (job) => {
   console.log(`Job ${job.id} completed successfully`);
-  await job.remove();
 });
 
 worker.on("failed", async (job, err) => {
   console.log(`Job ${job.id} failed with error: ${err.message}`);
-  await job.remove();
 });
