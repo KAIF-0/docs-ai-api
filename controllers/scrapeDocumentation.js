@@ -16,11 +16,7 @@ const scrapeQueue = new Queue("scrapeQueue", {
 export const scrapeDocumentation = async (key, url) => {
   const job = await scrapeQueue.getJob(key);
   if (!job) {
-    await scrapeQueue.add(
-      "scrapeJob",
-      { key, url },
-      { jobId: key, removeOnComplete: true, removeOnFail: true }
-    );
+    await scrapeQueue.add("scrapeJob", { key, url }, { jobId: key });
     console.log("Job added successfully!");
   } else {
     console.log("Job already exists!");
@@ -78,8 +74,10 @@ const worker = new Worker(
 
 worker.on("completed", async (job) => {
   console.log(`Job ${job.id} completed successfully`);
+  await job.remove();
 });
 
 worker.on("failed", async (job, err) => {
   console.log(`Job ${job.id} failed with error: ${err.message}`);
+  await job.remove();
 });
