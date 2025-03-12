@@ -72,6 +72,7 @@ const worker = new Worker(
     connection: {
       url: process.env.REDIS_CHAT_INSTANCE_URL,
     },
+    stalledInterval: 10 * 60 * 1000,
   }
 );
 
