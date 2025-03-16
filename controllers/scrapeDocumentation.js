@@ -42,6 +42,7 @@ const worker = new Worker(
       const browser = await puppeteer.launch({
         executablePath: chromium.path,
         args: ["--no-sandbox", "--disable-setuid-sandbox"],
+        protocolTimeout: 180000,
       });
 
       const page = await browser.newPage();
