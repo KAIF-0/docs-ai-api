@@ -21,8 +21,8 @@ export const scrapeDocumentation = async (key, url) => {
       { key, url },
       {
         jobId: key,
-        removeOnComplete: false,
-        removeOnFail: false,
+        removeOnComplete: true,
+        removeOnFail: true,
         attempts: 3,
         backoff: 5000,
       }
@@ -72,6 +72,7 @@ const worker = new Worker(
       await browser.close();
     } catch (error) {
       console.error(`Error processing job for key ${key}: ${error.message}`);
+      throw error;
     }
   },
   {
@@ -89,3 +90,4 @@ worker.on("completed", async (job) => {
 worker.on("failed", async (job, err) => {
   console.log(`Job ${job.id} failed with error: ${err.message}`);
 });
+
