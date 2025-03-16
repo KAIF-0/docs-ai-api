@@ -46,7 +46,7 @@ const worker = new Worker(
       });
 
       const page = await browser.newPage();
-      await page.goto(url, { waitUntil: "load", timeout: 0 });
+      await page.goto(url, { waitUntil: "domcontentloaded", timeout: 0 });
 
       const docLinks = await page.evaluate(() => {
         return Array.from(document.querySelectorAll("a[href]"))
@@ -57,7 +57,10 @@ const worker = new Worker(
       let docsData = [];
 
       for (let pageLink of docLinks) {
-        await page.goto(pageLink, { waitUntil: "load", timeout: 0 });
+        await page.goto(pageLink, {
+          waitUntil: "domcontentloaded",
+          timeout: 0,
+        });
         console.log(`Scraping: ${pageLink}`);
 
         const content = await page.evaluate(() => document.body.innerText);
