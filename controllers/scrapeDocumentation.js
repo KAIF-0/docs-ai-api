@@ -84,10 +84,9 @@ const worker = new Worker(
 );
 
 worker.on("completed", async (job) => {
-  console.log(`Job ${job.id} completed successfully`);
+  console.log(`Job ${job?.id} completed successfully`);
 });
 
 worker.on("failed", async (job, err) => {
-  console.log(`Job ${job.id} failed with error: ${err.message}`);
+  console.log(`Job ${job?.id} failed with error: ${err?.message}`);
 });
-
