@@ -40,7 +40,7 @@ chatInstance.post("/feed-docs", async (c) => {
     });
 
     // update cache
-    await updateChatCache(userId);
+    await updateChatCache(userId).catch((err) => console.log(err));
     return c.json({
       success: true,
       message: "Docs saved successfully!",
@@ -141,7 +141,7 @@ chatInstance.post("/getResponse/:chatId", async (c) => {
     });
 
     // updating cached messages
-    await updateChatCache(userId);
+    await updateChatCache(userId).catch((err) => console.log(err));
     return c.json({
       success: true,
       message: "AI response created successfully!",
