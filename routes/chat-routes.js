@@ -23,21 +23,32 @@ chatInstance.post("/feed-docs", async (c) => {
 
     console.log(key);
 
-    // checking if docs already exist in redis
+    let chat;
+
     const existingDocs = await chatRedisClient.get(key);
     if (!existingDocs) {
+      chat = await prisma.chat.create({
+        data: {
+          userId,
+          url,
+          key,
+        },
+      });
       // add a scraping job if not found in redis
-      await scrapeDocumentation(key, url).catch((err) => console.log(err));
+      await scrapeDocumentation(key, url, userId, chat.id).catch((err) =>
+        console.log(err)
+      );
+    } else {
+      chat = await prisma.chat.create({
+        data: {
+          userId,
+          url,
+          key,
+          isActive: true,
+        },
+      });
     }
     // console.log(JSON.parse(existingDocs).length);
-
-    const chat = await prisma.chat.create({
-      data: {
-        userId,
-        url,
-        key,
-      },
-    });
 
     // update cache
     await updateChatCache(userId).catch((err) => console.log(err));

@@ -15,9 +15,10 @@ datasource db {
 
 model Chat {
   id        String   @id @default(uuid())
-  userId    String   
+  userId    String
   url       String
   key       String
+  isActive  Boolean  @default(false)
   createdAt DateTime @default(now())
 
   messages Message[] @relation("ChatMessages")
@@ -26,7 +27,7 @@ model Chat {
 model Message {
   id        String   @id @default(uuid())
   chatId    String
-  userId    String   
+  userId    String
   question  String
   response  String
   createdAt DateTime @default(now())
@@ -40,7 +41,7 @@ model Subscription {
   username         String
   email            String
   phone            String
-  amount           Int            @default(5)
+  amount           Int              @default(5)
   orderId          String           @unique
   subscriptionType SubscriptionType
   startDate        DateTime

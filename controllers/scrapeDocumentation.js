@@ -4,6 +4,8 @@ import { subRedisClient } from "../configs/redis/subscriptionInstance.js";
 import chromium from "chromium";
 import { Queue, Worker } from "bullmq";
 import { config } from "dotenv";
+import { updateChatCache } from "../helper/updateCache.js";
+import { prisma } from "../configs/prisma.js";
 
 config();
 
@@ -13,12 +15,12 @@ const scrapeQueue = new Queue("scrapeQueue", {
   },
 });
 
-export const scrapeDocumentation = async (key, url) => {
+export const scrapeDocumentation = async (key, url, userId, chatId) => {
   const job = await scrapeQueue.getJob(key);
   if (!job) {
     await scrapeQueue.add(
       "scrapeJob",
-      { key, url },
+      { key, url, userId, chatId },
       {
         jobId: key,
         removeOnComplete: true,
@@ -88,7 +90,21 @@ const worker = new Worker(
 );
 
 worker.on("completed", async (job) => {
+  const { key, userId, chatId } = job.data;
   console.log(`Job ${job?.id} completed successfully`);
+
+  try {
+    await prisma.chat.update({
+      where: { id: chatId },
+      data: { isActive: true },
+    });
+
+    await updateChatCache(userId);
+
+    console.log(`Database updated and cache refreshed!`);
+  } catch (error) {
+    console.error(error.message);
+  }
 });
 
 worker.on("failed", async (job, err) => {
