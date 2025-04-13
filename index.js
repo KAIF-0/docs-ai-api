@@ -89,9 +89,9 @@ app.route("/chat", chatInstance);
 app.route("/", scrappingInstance);
 app.route("/subscription", paymentInstance);
 
-// app.get('/', (c) => {
-//   return c.text('Hello World!')
-// })
+app.get('/', (c) => {
+  return c.text('Hello fron DocsAI Server!')
+})
 
 //for error 500 (middleware)
 app.onError((err, c) => {
