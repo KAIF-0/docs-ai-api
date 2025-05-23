@@ -6,6 +6,7 @@ import { getOrSetUserChats } from "../controllers/userChats.js";
 import { updateChatCache } from "../helper/updateCache.js";
 import { model } from "../configs/genAI.js";
 import { docsData } from "../controllers/getDocsData.js";
+import { getResponse } from "../helper/getResponse.js";
 
 const chatInstance = new Hono();
 
@@ -134,9 +135,11 @@ chatInstance.post("/getResponse/:chatId", async (c) => {
 
     // const data = await docsData(key, url);
 
-    const prompt = `This is my documentation site url: ${url} and it's name: ${key}, please answer the question: "${question}". If the question is related to the site url and it's name then provide the best response you can otherwise response with that "Sorry, I cannot answer non related questions!"`;
-    const response = await model.generateContent([prompt]);
+    // const prompt = `This is my documentation site url: ${url} and it's name: ${key}, please answer the question: "${question}". If the question is related to the site url and it's name then provide the best response you can otherwise response with that "Sorry, I cannot answer non related questions!"`;
+    // const response = await model.generateContent([prompt]);
     // console.log(response.response.text());
+
+    const response = await getResponse(question, key, url);
 
     // await prisma.message.deleteMany({ where: { chatId } });
 
@@ -147,7 +150,8 @@ chatInstance.post("/getResponse/:chatId", async (c) => {
         },
         userId,
         question: question,
-        response: response.response.text(),
+        response: response,
+        // response: response.response.text(),
       },
     });
 
