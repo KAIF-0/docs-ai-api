@@ -96,7 +96,7 @@ app.get('/', (c) => {
 //for error 500 (middleware)
 app.onError((err, c) => {
   console.error(err.message);
-  return c.json(
+  return c.json( 
     {
       success: false,
       message: "Internal Server Error!",
