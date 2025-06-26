@@ -61,7 +61,7 @@ const worker = new Worker(
       for (let pageLink of docLinks) {
         await page.goto(pageLink, {
           waitUntil: "domcontentloaded",
-          timeout: 0,
+          timeout: 5 * 60 * 1000, //maximain timeout set to 5 min
         });
         console.log(`Scraping: ${pageLink}`);
 
