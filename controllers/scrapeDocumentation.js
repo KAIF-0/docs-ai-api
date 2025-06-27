@@ -1,7 +1,6 @@
-import puppeteer from "puppeteer-core";
+import puppeteer from "puppeteer";
 import { chatRedisClient } from "../configs/redis/chatInstance.js";
 import { subRedisClient } from "../configs/redis/subscriptionInstance.js";
-import chromium from "chromium";
 import { Queue, Worker } from "bullmq";
 import { config } from "dotenv";
 import { updateChatCache } from "../helper/updateCache.js";
@@ -42,7 +41,7 @@ const worker = new Worker(
 
     try {
       const browser = await puppeteer.launch({
-        executablePath: chromium.path,
+        executablePath: "/usr/bin/chromium-browser",
         args: ["--no-sandbox", "--disable-setuid-sandbox"],
         protocolTimeout: 300000,
       });

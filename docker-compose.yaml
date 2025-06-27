@@ -1,0 +1,21 @@
+services:
+  app:
+    image: docs-ai-main-server
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    ports:
+      - 8000:8000
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - FRONTEND_URL=${FRONTEND_URL}
+      - GENERATIVE_AI_API_KEY=${GENERATIVE_AI_API_KEY}
+      - PORT=${PORT}
+      - RAZORPAY_ID_KEY=${RAZORPAY_ID_KEY}
+      - RAZORPAY_SECRET_KEY=${RAZORPAY_SECRET_KEY}
+      - REDIS_CHAT_INSTANCE_PASSWORD=${REDIS_CHAT_INSTANCE_PASSWORD}
+      - REDIS_CHAT_INSTANCE_URL=${REDIS_CHAT_INSTANCE_URL}
+      - REDIS_SUBSCRIPTIONS_INSTANCE_URL=${REDIS_SUBSCRIPTIONS_INSTANCE_URL}
+      - RAG_SERVER_URL=${RAG_SERVER_URL}
+    # volumes:
+    #   - ./:/app

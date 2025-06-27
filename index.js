@@ -36,10 +36,10 @@ await subRedisClient
 await chatRedisClient
   .connect()
   .then(() => {
-    console.log("CHAT REDIS INSTANCE CONNECTED!"); 
+    console.log("CHAT REDIS INSTANCE CONNECTED!");
   })
   .catch((err) => {
-    console.log("CHAT REDIS ERROR: ", err); 
+    console.log("CHAT REDIS ERROR: ", err);
   });
 
 //redis error events
@@ -89,14 +89,14 @@ app.route("/chat", chatInstance);
 app.route("/", scrappingInstance);
 app.route("/subscription", paymentInstance);
 
-app.get('/', (c) => {
-  return c.text('Hello fron DocsAI Server!')
-})
+app.get("/", (c) => {
+  return c.text("Hello fron DocsAI Server!");
+});
 
 //for error 500 (middleware)
 app.onError((err, c) => {
   console.error(err.message);
-  return c.json( 
+  return c.json(
     {
       success: false,
       message: "Internal Server Error!",
