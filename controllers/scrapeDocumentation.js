@@ -59,10 +59,17 @@ const worker = new Worker(
       let docsData = [];
 
       for (let pageLink of docLinks) {
-        await page.goto(pageLink, {
-          waitUntil: "domcontentloaded",
-          timeout: 0,
-        });
+        let errorOccurred = false;
+        await page
+          .goto(pageLink, {
+            waitUntil: "domcontentloaded",
+            timeout: 5 * 60 * 1000,
+          })
+          .catch((err) => {
+            console.log(err);
+            errorOccurred = true;
+          });
+        if (errorOccurred) continue;
         console.log(`Scraping: ${pageLink}`);
 
         const content = await page.evaluate(() => document.body.innerText);
