@@ -64,7 +64,7 @@ const worker = new Worker(
             timeout: 300000,
           });
 
-          if (!response.ok()) {
+          if (!response.ok) {
             console.log(`Skipped ${pageLink}`);
             continue;
           }
