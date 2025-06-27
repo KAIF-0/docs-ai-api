@@ -58,24 +58,20 @@ const worker = new Worker(
       let docsData = [];
 
       for (let pageLink of docLinks) {
-        try {
-          const response = await page.goto(pageLink, {
+        await page
+          .goto(pageLink, {
             waitUntil: "domcontentloaded",
-            timeout: 300000,
+            timeout: 5 * 60 * 1000,
+          })
+          .then(async () => {
+            console.log(`Scraping: ${pageLink}`);
+
+            const content = await page.evaluate(() => document.body.innerText);
+            docsData.push({ url: pageLink, content });
+          })
+          .catch((err) => {
+            console.log("Goto Error: ", err);
           });
-
-          if (!response.ok) {
-            console.log(`Skipped ${pageLink}`);
-            continue;
-          }
-
-          const content = await page.evaluate(() => document.body.innerText);
-          docsData.push({ url: pageLink, content });
-
-          console.log(`Scraped: ${pageLink}`);
-        } catch (err) {
-          console.log(`Failed: ${pageLink} — Reason: ${err.message}`);
-        }
       }
 
       await chatRedisClient.setEx(
