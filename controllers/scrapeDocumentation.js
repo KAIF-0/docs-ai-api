@@ -53,7 +53,7 @@ const worker = new Worker(
       const docLinks = await page.evaluate(() => {
         return Array.from(document.querySelectorAll("a[href]"))
           .map((link) => link.href)
-          .filter((href) => href.includes("/docs"));
+          .filter((href) => href.includes("/doc"));
       });
 
       let docsData = [];
