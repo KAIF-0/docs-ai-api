@@ -66,7 +66,7 @@ const worker = new Worker(
             timeout: 5 * 60 * 1000,
           })
           .catch((err) => {
-            console.log(err);
+            console.log("Goto Error: ", err);
             errorOccurred = true;
           });
         if (errorOccurred) continue;
