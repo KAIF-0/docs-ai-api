@@ -106,7 +106,11 @@ worker.on("completed", async (job) => {
         console.log(data?.data);
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response && err.response.data) {
+          console.log(err.response.data);
+        } else {
+          console.log(err?.response?.data);
+        }
       });
 
     console.log(`Database updated and cache refreshed!`);
