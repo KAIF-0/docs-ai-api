@@ -52,6 +52,8 @@ const worker = new Worker(
         .filter((href) => !!href && href.includes("/doc"))
         .map((href) => new URL(href, url).href);
 
+      const docsData = [];
+
       for (let link of docLinks) {
         try {
           const cleanedText = await extractCleanTextFromUrl(link);
