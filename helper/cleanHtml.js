@@ -1,3 +1,5 @@
+import * as cheerio from "cheerio";
+
 export async function extractCleanTextFromUrl(url) {
   try {
     const res = await fetch(url).catch((err) => {
