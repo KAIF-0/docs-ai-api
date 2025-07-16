@@ -1,10 +1,11 @@
-import puppeteer from "puppeteer";
 import { chatRedisClient } from "../configs/redis/chatInstance.js";
 import { subRedisClient } from "../configs/redis/subscriptionInstance.js";
 import { Queue, Worker } from "bullmq";
 import { config } from "dotenv";
 import { updateChatCache } from "../helper/updateCache.js";
 import { prisma } from "../configs/prisma.js";
+import * as cheerio from "cheerio";
+import { extractCleanTextFromUrl } from "../helper/cleanHtml.js";
 
 config();
 
@@ -40,38 +41,28 @@ const worker = new Worker(
     const { key, url } = job.data;
 
     try {
-      const browser = await puppeteer.launch({
-        executablePath: "/usr/bin/chromium-browser",
-        args: ["--no-sandbox", "--disable-setuid-sandbox"],
-        protocolTimeout: 300000,
+      const res = await fetch(url).catch((err) => {
+        console.log(`Fetch error for ${url}: `, err);
       });
+      const html = await res.text();
+      const $ = cheerio.load(html);
 
-      const page = await browser.newPage();
-      await page.goto(url, { waitUntil: "domcontentloaded", timeout: 0 });
+      const docLinks = Array.from($("a[href]"))
+        .map((el) => $(el).attr("href"))
+        .filter((href) => !!href && href.includes("/doc"))
+        .map((href) => new URL(href, url).href);
 
-      const docLinks = await page.evaluate(() => {
-        return Array.from(document.querySelectorAll("a[href]"))
-          .map((link) => link.href)
-          .filter((href) => href.includes("/doc"));
-      });
+      const docsData = [];
 
-      let docsData = [];
-
-      for (let pageLink of docLinks) {
-        await page
-          .goto(pageLink, {
-            waitUntil: "domcontentloaded",
-            timeout: 5 * 60 * 1000,
-          })
-          .then(async () => {
-            console.log(`Scraping: ${pageLink}`);
-
-            const content = await page.evaluate(() => document.body.innerText);
-            docsData.push({ url: pageLink, content });
-          })
-          .catch((err) => {
-            console.log("Goto Error: ", err);
-          });
+      for (let link of docLinks) {
+        try {
+          const cleanedText = await extractCleanTextFromUrl(link);
+          // console.log(cleanedText);
+          docsData.push({ url: link, content: cleanedText });
+          console.log(`Scraped with cheerio: ${link}`);
+        } catch (err) {
+          console.log(`Cheerio load error for ${link}:`, err?.message);
+        }
       }
 
       await chatRedisClient.setEx(
@@ -79,8 +70,6 @@ const worker = new Worker(
         30 * 24 * 60 * 60,
         JSON.stringify(docsData)
       );
-
-      await browser.close();
     } catch (error) {
       console.error(`Error processing job for key ${key}: ${error.message}`);
       throw error;
