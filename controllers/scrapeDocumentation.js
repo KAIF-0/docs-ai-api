@@ -6,6 +6,7 @@ import { updateChatCache } from "../helper/updateCache.js";
 import { prisma } from "../configs/prisma.js";
 import * as cheerio from "cheerio";
 import { extractCleanTextFromUrl } from "../helper/cleanHtml.js";
+import axios from "axios";
 
 config();
 
@@ -67,7 +68,7 @@ const worker = new Worker(
 
       await chatRedisClient.setEx(
         key,
-        30 * 24 * 60 * 60,
+        7 * 24 * 60 * 60,
         JSON.stringify(docsData)
       );
     } catch (error) {
@@ -94,6 +95,18 @@ worker.on("completed", async (job) => {
     });
 
     await updateChatCache(userId);
+
+    // feed data to vector store for RAG
+    await axios
+      .post(`${process.env.RAG_SERVER_URL}/feedDocs`, {
+        key,
+      })
+      .then((data) => {
+        console.log(data?.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
 
     console.log(`Database updated and cache refreshed!`);
   } catch (error) {
