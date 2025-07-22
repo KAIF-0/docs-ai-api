@@ -50,7 +50,7 @@ const worker = new Worker(
 
       const docLinks = Array.from($("a[href]"))
         .map((el) => $(el).attr("href"))
-        .filter((href) => !!href && href.includes("/doc"))
+        .filter((href) => !!href && href.includes("docs"))
         .map((href) => new URL(href, url).href);
 
       const docsData = [];
