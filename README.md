@@ -1,4 +1,4 @@
-# DocsAI Server - Restructured
+# DocsAI Server Documentation
 
 A clean, modular web scraping server built with Hono.js, featuring documentation scraping, AI-powered chat responses, and subscription management.
 
@@ -68,22 +68,6 @@ src/
 npm install
 ```
 
-## 🔧 Configuration
-
-Create a `.env` file in the root directory with the following variables:
-
-```env
-PORT=3000
-FRONTEND_URL=http://localhost:3000
-DATABASE_URL=postgresql://username:password@localhost:5432/docsai
-REDIS_CHAT_INSTANCE_URL=redis://localhost:6379/0
-REDIS_SUBSCRIPTIONS_INSTANCE_URL=redis://localhost:6379/1
-GENERATIVE_AI_API_KEY=your_google_ai_api_key
-RAZORPAY_ID_KEY=your_razorpay_key_id
-RAZORPAY_SECRET_KEY=your_razorpay_secret_key
-RAG_SERVER_URL=http://localhost:8000
-```
-
 ## 🏃‍♂️ Running the Application
 
 ### Development Mode
@@ -93,23 +77,8 @@ npm run dev
 
 ### Production Mode
 ```bash
-npm start
+npm run start
 ```
-
-## 📚 API Endpoints
-
-### Chat Routes (`/chat`)
-- `POST /chat/feed-docs` - Add documentation for scraping
-- `GET /chat/getUserChats/:userId` - Get user's chat history
-- `POST /chat/getResponse/:chatId` - Get AI response
-
-### Payment Routes (`/subscription`)
-- `POST /subscription/createOrder` - Create payment order
-- `POST /subscription/saveDetails` - Save subscription details
-- `GET /subscription/getDetails/:userId` - Get subscription details
-
-### Scraping Routes (`/`)
-- `GET /scrap` - Trigger documentation scraping
 
 ## 🏗️ Architecture Overview
 
