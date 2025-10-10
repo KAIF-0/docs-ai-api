@@ -14,7 +14,8 @@ export class SubscriptionService {
       const freshData = await subscriptionRepo.findUnique({
         userId,
       });
-      if (!freshData && new Date(freshData?.endDate) < new Date()) {
+      if (!freshData) return resolve(null);
+      if (new Date(freshData?.endDate) < new Date()) {
         //subscription expired
         return resolve(null);
       }
