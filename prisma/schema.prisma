@@ -32,7 +32,7 @@ model Message {
   response  String
   createdAt DateTime @default(now())
 
-  chat Chat @relation("ChatMessages", fields: [chatId], references: [id])
+  chat Chat @relation("ChatMessages", fields: [chatId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model Subscription {

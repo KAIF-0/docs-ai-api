@@ -1,10 +1,9 @@
 import axios from "axios";
-import { config } from "dotenv";
-config();
+import { ENV } from "../config/env.js";
 
 export const getResponse = async (query, key, url) => {
   try {
-    const res = await axios.post(`${process.env.RAG_SERVER_URL}/getResponse`, {
+    const res = await axios.post(`${ENV.RAG_SERVER_URL}/getResponse`, {
       query,
       key,
       url,
