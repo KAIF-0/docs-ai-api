@@ -1,5 +1,7 @@
 import { prisma } from "../config/prisma.js";
 
+
+//getter setter methods for db operations
 export class ChatRepository {
   async create(data) {
     return await prisma.chat.create({ data });
