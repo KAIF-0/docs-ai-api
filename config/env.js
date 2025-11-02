@@ -12,4 +12,6 @@ export const ENV = {
   RAZORPAY_ID_KEY: process.env.RAZORPAY_ID_KEY,
   RAZORPAY_SECRET_KEY: process.env.RAZORPAY_SECRET_KEY,
   RAG_SERVER_URL: process.env.RAG_SERVER_URL,
+  ARCJET_KEY: process.env.ARCJET_KEY,
+  ARCJET_ENV: process.env.ARCJET_ENV || "production",
 };
