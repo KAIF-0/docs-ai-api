@@ -32,7 +32,7 @@ class RateLimitMiddleware {
 
                 const decision = await aj.protect(c.req.raw, {
                     requested: config.requested,
-                    userId: uniqueKey
+                    // KEY: uniqueKey
                 });
 
                 console.log(`[${severity}] Arcjet decision for IP ${uniqueKey}:`, decision.conclusion);

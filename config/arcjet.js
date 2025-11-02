@@ -10,6 +10,7 @@ const baseRules = [
             "CATEGORY:SEARCH_ENGINE",
             "CATEGORY:PREVIEW",
             // "CATEGORY:MONITORING",
+
             //common bots for testing
             "POSTMAN",
             "CURL",
@@ -62,7 +63,7 @@ class Arcjet {
                 ...baseRules,
                 tokenBucket({
                     mode: "LIVE",
-                    characteristics: ["userId"],
+                    characteristics: ["ip.src"],  //automatically picks IP source address
                     refillRate: instanceType.refillRate,
                     interval: instanceType.interval,
                     capacity: instanceType.capacity,
