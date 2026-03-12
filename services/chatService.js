@@ -11,7 +11,7 @@ export class ChatService {
 
       //if not found in cache
       const freshData = await chatRepo.findManyByUserId(userId);
-      if (!freshData || freshData?.length == 0) return resolve(null);
+      if (!freshData) return resolve(null);
       // console.log("User Chats: ", freshData);
 
       //cache fresh data
