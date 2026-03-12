@@ -20,6 +20,8 @@ export class RedisConnectionManager {
       .catch((err) => {
         console.log("CHAT REDIS ERROR: ", err);
       });
+    
+    // await this.flushRedis();
 
     this.setupErrorHandlers();
   }
@@ -67,5 +69,10 @@ export class RedisConnectionManager {
         }
       }, 1000);
     });
+  }
+
+  static async flushRedis(){
+      await chatRedisClient.flushDb();
+      await subRedisClient.flushDb();
   }
 }
