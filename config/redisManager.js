@@ -22,7 +22,7 @@ export class RedisConnectionManager {
       });
     
     // await this.flushRedis();
-
+ 
     this.setupErrorHandlers();
   }
 
