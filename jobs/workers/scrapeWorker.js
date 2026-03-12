@@ -6,14 +6,13 @@ import { chatRedisClient } from "../../config/redis.js";
 import { extractCleanTextFromUrl } from "../../utils/htmlCleaner.js";
 import { updateChatCache } from "../../helpers/cacheHelper.js";
 import { ChatRepository } from "../../database/repositories.js";
-import { publishScrapeJob } from "../publishers/scrapePublisher.js";
 
 const chatRepo = new ChatRepository();
 
 const worker = new Worker(
   "scrapeQueue",
   async (job) => {
-    const { key, url } = job.data;
+    const { key, url, userId, chatId } = job.data;
 
     try {
       const res = await fetch(url).catch((err) => {
@@ -44,6 +43,16 @@ const worker = new Worker(
         7 * 24 * 60 * 60,
         JSON.stringify(docsData)
       );
+
+      const { data } = await axios.post(`${ENV.RAG_SERVER_URL}/feedDocs`, {
+        key,
+      });
+      console.log(data);
+
+      await Promise.all([
+        chatRepo.updateById(chatId, { isActive: true }),
+        updateChatCache(userId),
+      ]);
     } catch (error) {
       console.error(`Error processing job for key ${key}: ${error.message}`);
       throw error;
@@ -58,26 +67,8 @@ const worker = new Worker(
   }
 );
 
-worker.on("completed", async (job) => {
-  const { key, userId, chatId, url } = job.data;
+worker.on("completed", (job) => {
   console.log(`Job ${job?.id} completed successfully`);
-
-  try {
-    await axios.post(`${ENV.RAG_SERVER_URL}/feedDocs`, { key }).then((data) => {
-      //feed data to vector store for RAG
-      console.log(data?.data);
-    });
-    await Promise.all([
-      chatRepo.updateById(chatId, { isActive: true }),
-      updateChatCache(userId),
-    ]);
-
-    console.log(`Chat status updated and cache refreshed!`);
-  } catch (error) {
-    console.error(error.message);
-    //reAdd job on failure
-    await publishScrapeJob(key, url, userId, chatId);
-  }
 });
 
 worker.on("failed", async (job, err) => {
