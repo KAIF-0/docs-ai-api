@@ -49,9 +49,9 @@ class RateLimitMiddleware {
                     }
                 }
 
-                if (decision.ip.isHosting()) {
-                    return c.json(new RateLimitAPIResponse("Hosting IPs are not allowed!"), 403);
-                }
+                // if (decision.ip.isHosting()) {
+                //     return c.json(new RateLimitAPIResponse("Hosting IPs are not allowed!"), 403);
+                // }
 
                 if (decision.results.some(isSpoofedBot)) {
                     return c.json(new RateLimitAPIResponse("Spoofed bots are not allowed!"), 403);
