@@ -85,7 +85,7 @@ export class ChatController {
         throw new Error("Invalid chatId!");
       }
 
-      const response = await getResponse(question, key, url);
+      const response = await getResponse(question, key, url, userId);
 
       const chatMessage = await messageRepo.create({
         chat: {
